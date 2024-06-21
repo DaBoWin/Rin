@@ -77,9 +77,6 @@ export function FeedsPage() {
             <Waiting for={feeds.draft.size + feeds.normal.size + feeds.unlisted.size > 0 || status === 'idle'}>
                 <main className="w-full flex flex-col justify-center items-center mb-8">
                     <div className="wauto text-start text-black dark:text-white py-4 text-4xl font-bold">
-                        <p>
-                            {listState === 'draft' ? "草稿箱" : listState === 'normal' ? "文章" : "未列出"}
-                        </p>
                         <div className="flex flex-row justify-between">
                             <p className="text-sm mt-4 text-neutral-500 font-normal">
                                 共有 {feeds[listState]?.size} 篇文章
