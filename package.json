@@ -1,6 +1,7 @@
 {
   "name": "rin",
   "version": "1.0.0",
+  "packageManager": "bun@1.1.4",
   "workspaces": [
     "server",
     "client"
