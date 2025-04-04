@@ -29,6 +29,10 @@ function Footer() {
 
     return (
         <footer>
+            <iframe frameborder="0"
+              src="https://support.nodeget.com/page/promotion?id=99999"
+              style="border-radius:8px; height: 246px; transform: scale(1.0); transform-origin: top left;">
+            </iframe>
             <div className="flex flex-col mb-8 space-y-2 justify-center items-center h-16 t-primary ani-show">
                 <p className='text-sm text-neutral-500 font-normal link-line'>
                     <span>
