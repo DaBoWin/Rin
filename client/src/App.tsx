@@ -30,7 +30,7 @@ function App() {
           setProfile({
             id: data.id,
             avatar: data.avatar || '',
-            permission: data.permission,
+            permission: Boolean(data.permission),
             name: data.username
           })
         }
