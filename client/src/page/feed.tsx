@@ -60,7 +60,9 @@ export function FeedPage({ id }: { id: string }) {
             contentSelector: '.toc-content',
             headingSelector: 'h1, h2, h3, h4, h5, h6',
             collapseDepth: 2,
-            headingLabelCallback(headingLabel) {
+            scrollHandlerTimeout: 100,
+            tocScrollingWrapper: window,
+            headingLabelCallback(headingLabel: string) {
                 setEmpty(false)
                 return headingLabel
             },
@@ -70,7 +72,7 @@ export function FeedPage({ id }: { id: string }) {
         setHeadImage(undefined)
         client.feed({ id }).get({
             headers: headersWithAuth()
-        }).then(({ data, error }) => {
+        }).then(({ data, error }: { data?: Feed, error?: { value: string } }) => {
             if (error) {
                 setError(error.value as string)
             } else if (data && typeof data !== 'string') {
@@ -340,7 +342,7 @@ function Comments({ id }: { id: string }) {
     function loadComments() {
         client.feed.comment({ feed: id }).get({
             headers: headersWithAuth()
-        }).then(({ data, error }) => {
+        }).then(({ data, error }: { data?: Comment[], error?: { value: string } }) => {
             if (error) {
                 setError(error.value as string)
             } else if (data && Array.isArray(data)) {

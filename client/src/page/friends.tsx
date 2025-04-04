@@ -65,7 +65,7 @@ export function FriendsPage() {
     const ref = useRef(false)
     useEffect(() => {
         if (ref.current) return
-        client.friend.index.get().then(({ data }) => {
+        client.friend.index.get().then(({ data }: { data?: { friend_list?: FriendItem[], apply_list?: ApplyItem[] } }) => {
             if (data) {
                 const friends_available = data.friend_list?.filter(({ health }) => health.length === 0) || []
                 shuffleArray(friends_available)
@@ -160,7 +160,7 @@ function Friend({ friend }: { friend: FriendItem }) {
         if (confirm("确定删除吗？")) {
             client.friend({ id: friend.id }).delete(friend.id, {
                 headers: headersWithAuth()
-            }).then(({ error }) => {
+            }).then(({ error }: { error?: { value: string } }) => {
                 if (error) {
                     alert(error.value)
                 } else {
@@ -178,7 +178,7 @@ function Friend({ friend }: { friend: FriendItem }) {
             url
         }, {
             headers: headersWithAuth()
-        }).then(({ error }) => {
+        }).then(({ error }: { error?: { value: string } }) => {
             if (error) {
                 alert(error.value)
             } else {
