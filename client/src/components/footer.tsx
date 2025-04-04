@@ -34,10 +34,6 @@ function Footer() {
                     <span>
                         © 2024 Powered by <a className='hover:underline' href="https://github.com/DaBoWin" target="_blank">DaBo</a>
                     </span>
-                    <iframe frameborder="0"
-                      src="https://support.nodeget.com/page/promotion?id=99999"
-                      style="border-radius:8px; height: 246px; transform: scale(1.0); transform-origin: top left;">
-                    </iframe>
                     {process.env.RSS_ENABLE === "true" && <>
                         <Spliter />{/*  */}
                         <Popup trigger={
