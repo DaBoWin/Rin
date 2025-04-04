@@ -10,7 +10,7 @@ export const UserService = (db: DB, env: Env) => new Elysia({ aot: false })
     .use(setup(db, env))
     .group('/user', (group) =>
         group
-            .get("/github", ({ oauth2, headers: { referer }, cookie: { redirect_to } }) => {
+            .get("/github", ({ oauth2, headers: { referer }, cookie: { redirect_to } }: { oauth2: any, headers: { referer: string }, cookie: { redirect_to: { value: string } } }) => {
                 if (!referer) {
                     return 'Referer not found'
                 }
@@ -18,7 +18,7 @@ export const UserService = (db: DB, env: Env) => new Elysia({ aot: false })
                 redirect_to.value = `${referer_url.protocol}//${referer_url.host}`
                 return oauth2.redirect("GitHub", { scopes: ["read:user"] })
             })
-            .get("/github/callback", async ({ jwt, oauth2, set, store, query, cookie: { token, redirect_to, state } }) => {
+            .get("/github/callback", async ({ jwt, oauth2, set, store, query, cookie: { token, redirect_to, state } }: { jwt: any, oauth2: any, set: any, store: any, query: any, cookie: { token: { value: string, set: (options: { value: string, expires: Date, path: string }) => void }, redirect_to: { value: string }, state: { value: string } } }) => {
 
                 console.log('state', state.value)
                 console.log('p_state', query.state)
@@ -88,7 +88,7 @@ export const UserService = (db: DB, env: Env) => new Elysia({ aot: false })
                     code: t.String(),
                 })
             })
-            .get('/profile', async ({ set, uid }) => {
+            .get('/profile', async ({ set, uid }: { set: { status: number }; uid: string }) => {
                 if (!uid) {
                     set.status = 403
                     return 'Permission denied'

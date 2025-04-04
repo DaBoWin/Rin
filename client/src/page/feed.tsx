@@ -61,8 +61,8 @@ export function FeedPage({ id }: { id: string }) {
             headingSelector: 'h1, h2, h3, h4, h5, h6',
             collapseDepth: 2,
             scrollHandlerTimeout: 100,
-            tocScrollingWrapper: window,
-            scrollContainer: window,
+            tocScrollingWrapper: null,
+            scrollContainer: null,
             headingsOffset: 0,
             headingLabelCallback(headingLabel: string) {
                 setEmpty(false)
@@ -207,6 +207,9 @@ export function TOCHeader() {
                             contentSelector: '.toc-content',
                             headingSelector: 'h1, h2, h3, h4, h5, h6',
                             collapseDepth: 2,
+                            scrollHandlerTimeout: 100,
+                            tocScrollingWrapper: null,
+                            scrollContainer: null,
                             headingLabelCallback(headingLabel) {
                                 setEmpty(false)
                                 return headingLabel
@@ -248,6 +251,9 @@ export function TOCHeader() {
                             contentSelector: '.toc-content',
                             headingSelector: 'h1, h2, h3, h4, h5, h6',
                             collapseDepth: 2,
+                            scrollHandlerTimeout: 100,
+                            tocScrollingWrapper: null,
+                            scrollContainer: null,
                             headingLabelCallback(headingLabel) {
                                 setEmpty(false)
                                 return headingLabel

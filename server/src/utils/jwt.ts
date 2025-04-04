@@ -8,8 +8,8 @@ import {
     type KeyLike
 } from 'jose'
 
-import { Type as t } from '@sinclair/typebox'
 import type { Static, TSchema } from '@sinclair/typebox'
+import { Type } from '@sinclair/typebox'
 
 type UnwrapSchema<
     Schema extends TSchema | undefined,
@@ -107,21 +107,21 @@ JWTOption<Name, Schema>) => {
 
     const validator = schema
         ? getSchemaValidator(
-              t.Intersect([
+              Type.Intersect([
                   schema,
-                  t.Object({
-                      iss: t.Optional(t.String()),
-                      sub: t.Optional(t.String()),
-                      aud: t.Optional(
-                          t.Union([t.String(), t.Array(t.String())])
+                  Type.Object({
+                      iss: Type.Optional(Type.String()),
+                      sub: Type.Optional(Type.String()),
+                      aud: Type.Optional(
+                          Type.Union([Type.String(), Type.Array(Type.String())])
                       ),
-                      jti: t.Optional(t.String()),
-                      nbf: t.Optional(t.Union([t.String(), t.Number()])),
-                      exp: t.Optional(t.Union([t.String(), t.Number()])),
-                      iat: t.Optional(t.String())
+                      jti: Type.Optional(Type.String()),
+                      nbf: Type.Optional(Type.Union([Type.String(), Type.Number()])),
+                      exp: Type.Optional(Type.Union([Type.String(), Type.Number()])),
+                      iat: Type.Optional(Type.String())
                   })
               ]),
-              { dynamic }
+              { dynamic, modules: Type.Module({}) }
           )
         : undefined
 

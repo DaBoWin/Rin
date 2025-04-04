@@ -13,7 +13,7 @@ export function TimelinePage() {
     function fetchFeeds() {
         client.feed.timeline.get({
             headers: headersWithAuth()
-        }).then(({ data }) => {
+        }).then(({ data }: { data?: { id: number; title: string | null; createdAt: Date }[] }) => {
             if (data && typeof data != 'string') {
                 setLength(data.length)
                 const groups = Object.groupBy(data, ({ createdAt }: { createdAt: Date }) => new Date(createdAt).getFullYear()) as Partial<Record<number, { id: number; title: string | null; createdAt: Date; }[]>>

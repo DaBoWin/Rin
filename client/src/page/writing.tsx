@@ -9,7 +9,7 @@ import { headersWithAuth } from '../utils/auth';
 import { siteName } from "../utils/constants";
 
 async function publish({ title, alias, listed, content, summary, tags, draft }: { title: string, listed: boolean, content: string, summary: string, tags: string[], draft: boolean, alias?: string }) {
-  const { data, error } = await client.feed.index.post({
+  const { data, error }: { data?: { insertedId: number }, error?: { value: string } } = await client.feed.index.post({
     title,
     alias,
     content,
@@ -57,7 +57,7 @@ function uploadImage(file: File, onSuccess: (url: string) => void) {
     file: file
   }, {
     headers: headersWithAuth()
-  }).then(({ data, error }) => {
+  }).then(({ data, error }: { data?: string, error?: { value: string } }) => {
     if (error) {
       alert('上传失败' + error.value)
     }
@@ -157,7 +157,7 @@ export function WritingPage({ id }: { id?: number }) {
     if (id) {
       client.feed({ id }).get({
         headers: headersWithAuth()
-      }).then(({ data }) => {
+      }).then(({ data }: { data?: { title: string, hashtags: { name: string }[], alias: string, content: string, summary: string, listed: number, draft: number } }) => {
         if (data && typeof data !== 'string') {
           if (title == '' && data.title)
             setTitle(data.title)

@@ -10,7 +10,7 @@ export const CommentService = (db: DB, env: Env) => new Elysia({ aot: false })
     .use(setup(db, env))
     .group('/feed/comment', (group) =>
         group
-            .get('/:feed', async ({ params: { feed } }) => {
+            .get('/:feed', async ({ params: { feed } }: { params: { feed: string } }) => {
                 const feedId = parseInt(feed);
                 const comment_list = await db.query.comments.findMany({
                     where: eq(comments.feedId, feedId),
@@ -24,7 +24,7 @@ export const CommentService = (db: DB, env: Env) => new Elysia({ aot: false })
                 });
                 return comment_list;
             })
-            .post('/:feed', async ({ uid, set, params: { feed }, body: { content } }) => {
+            .post('/:feed', async ({ uid, set, params: { feed }, body: { content } }: { uid: string, set: { status: number }, params: { feed: string }, body: { content: string } }) => {
                 if (!uid) {
                     set.status = 401;
                     return 'Unauthorized';
@@ -64,7 +64,7 @@ export const CommentService = (db: DB, env: Env) => new Elysia({ aot: false })
     )
     .group('/comment', (group) =>
         group
-            .delete('/:id', async ({ uid, admin, set, params: { id } }) => {
+            .delete('/:id', async ({ uid, admin, set, params: { id } }: { uid: string, admin: boolean, set: { status: number }, params: { id: string } }) => {
                 if (uid === undefined) {
                     set.status = 401;
                     return 'Unauthorized';

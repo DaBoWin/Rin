@@ -10,14 +10,14 @@ import { drizzle } from "drizzle-orm/d1";
 export const FriendService = (db: DB, env: Env) => new Elysia({ aot: false })
     .use(setup(db, env))
     .group('/friend', (group) =>
-        group.get('/', async ({ admin, uid }) => {
+        group.get('/', async ({ admin, uid }: { admin: boolean; uid: string }) => {
             const friend_list = await (admin ? db.query.friends.findMany() : db.query.friends.findMany({ where: eq(friends.accepted, 1) }));
             console.log(friend_list);
-            const apply_list = await db.query.friends.findFirst({ where: eq(friends.uid, uid ?? null) });
+            const apply_list = await db.query.friends.findFirst({ where: uid ? eq(friends.uid, parseInt(uid)) : undefined });
             console.log(apply_list);
             return { friend_list, apply_list };
         })
-            .post('/', async ({ admin, uid, set, body: { name, desc, avatar, url } }) => {
+            .post('/', async ({ admin, uid, set, body: { name, desc, avatar, url } }: { admin: boolean, uid: string, set: { status: number }, body: { name: string, desc: string, avatar: string, url: string } }) => {
                 if (name.length > 20 || desc.length > 100 || avatar.length > 100 || url.length > 100) {
                     set.status = 400;
                     return 'Invalid input';
@@ -32,7 +32,7 @@ export const FriendService = (db: DB, env: Env) => new Elysia({ aot: false })
                 }
                 if (!admin) {
                     const exist = await db.query.friends.findFirst({
-                        where: eq(friends.uid, uid),
+                        where: eq(friends.uid, parseInt(uid)),
                     });
                     if (exist) {
                         set.status = 400;
@@ -58,7 +58,7 @@ export const FriendService = (db: DB, env: Env) => new Elysia({ aot: false })
                     url: t.String(),
                 })
             })
-            .put('/:id', async ({ admin, uid, set, params: { id }, body: { name, desc, avatar, url, accepted } }) => {
+            .put('/:id', async ({ admin, uid, set, params: { id }, body: { name, desc, avatar, url, accepted } }: { admin: boolean, uid: string, set: { status: number }, params: { id: string }, body: { name: string, desc: string, avatar?: string, url: string, accepted?: number } }) => {
                 if (!uid) {
                     set.status = 401;
                     return 'Unauthorized';
@@ -70,7 +70,7 @@ export const FriendService = (db: DB, env: Env) => new Elysia({ aot: false })
                     set.status = 404;
                     return 'Not found';
                 }
-                if (!admin && exist.uid !== uid) {
+                if (!admin && exist.uid !== parseInt(uid)) {
                     set.status = 403;
                     return 'Permission denied';
                 }
@@ -97,7 +97,7 @@ export const FriendService = (db: DB, env: Env) => new Elysia({ aot: false })
                     accepted: t.Optional(t.Integer()),
                 })
             })
-            .delete('/:id', async ({ admin, uid, set, params: { id } }) => {
+            .delete('/:id', async ({ admin, uid, set, params: { id } }: { admin: boolean, uid: string, set: { status: number }, params: { id: string } }) => {
                 if (!uid) {
                     set.status = 401;
                     return 'Unauthorized';
@@ -109,7 +109,7 @@ export const FriendService = (db: DB, env: Env) => new Elysia({ aot: false })
                     set.status = 404;
                     return 'Not found';
                 }
-                if (!admin && exist.uid !== uid) {
+                if (!admin && exist.uid !== parseInt(uid)) {
                     set.status = 403;
                     return 'Permission denied';
                 }

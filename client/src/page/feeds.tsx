@@ -42,7 +42,7 @@ export function FeedsPage() {
                 type: type
             },
             headers: headersWithAuth()
-        }).then(({ data }: { data?: { size: number, data: any[], hasNext: boolean } }) => {
+        }).then(({ data }: { data?: { size: number, data: any[], hasNext: boolean } | string }) => {
             if (data && typeof data != 'string') {
                 setFeeds({
                     ...feeds,

@@ -16,13 +16,13 @@ export function Settings() {
                 data: file,
             }, {
                 headers: headersWithAuth()
-            }).then(({data}) => {
+            }).then(({data}: { data?: { success: number, skipped: number, skippedList: { title: string, reason: string }[] } }) => {
                 if (data && typeof data != 'string') {
                     setMsg(`导入成功，成功导入 ${data.success} 篇文章，跳过 ${data.skipped} 篇文章`)
                     setMsgList(data.skippedList)
                     setIsOpen(true);
                 }
-            }).catch((err) => {
+            }).catch((err: Error) => {
                 alert(`导入失败: ${err.message}`)
             })
         }

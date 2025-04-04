@@ -24,7 +24,7 @@ export const StorageService = (db: DB, env: Env) => {
         .use(setup(db, env))
         .group('/storage', (group) =>
             group
-                .post('/', async ({ uid, set, body: { key, file } }) => {
+                .post('/', async ({ uid, set, body: { key, file } }: { uid: string, set: { status: number }, body: { key: string, file: File } }) => {
 
                     if (!endpoint) {
                         set.status = 500;

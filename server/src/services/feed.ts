@@ -13,7 +13,7 @@ export const FeedService = (db: DB, env: Env) => new Elysia({aot: false})
     .use(setup(db, env))
     .group('/feed', (group) =>
         group
-            .get('/', async ({admin, set, query: {page, limit, type}}) => {
+            .get('/', async ({admin, set, query: {page, limit, type}}: { admin: boolean, set: { status: number }, query: { page?: number, limit?: number, type?: string } }) => {
                 if ((type === 'draft' || type === 'unlisted') && !admin) {
                     set.status = 403;
                     return 'Permission denied';
@@ -93,7 +93,7 @@ export const FeedService = (db: DB, env: Env) => new Elysia({aot: false})
                     orderBy: [desc(feeds.createdAt), desc(feeds.updatedAt)],
                 }))
             })
-            .post('/', async ({admin, set, uid, body: {title, alias, listed, content, summary, draft, tags}}) => {
+            .post('/', async ({admin, set, uid, body: {title, alias, listed, content, summary, draft, tags}}: { admin: boolean, set: { status: number }, uid: string, body: { title: string, alias?: string, listed: boolean, content: string, summary: string, draft: boolean, tags: string[] } }) => {
                 if (!admin) {
                     set.status = 403;
                     return 'Permission denied';
@@ -121,7 +121,7 @@ export const FeedService = (db: DB, env: Env) => new Elysia({aot: false})
                     title,
                     content,
                     summary,
-                    uid,
+                    uid: parseInt(uid),
                     alias,
                     listed: listed ? 1 : 0,
                     draft: draft ? 1 : 0
@@ -144,7 +144,7 @@ export const FeedService = (db: DB, env: Env) => new Elysia({aot: false})
                     tags: t.Array(t.String())
                 })
             })
-            .get('/:id', async ({uid, admin, set, params: {id}}) => {
+            .get('/:id', async ({uid, admin, set, params: {id}}: { uid: string, admin: boolean, set: { status: number }, params: { id: string } }) => {
                 const id_num = parseInt(id);
                 const feed = (await db.query.feeds.findFirst({
                     where: or(eq(feeds.id, id_num), eq(feeds.alias, id)),
@@ -166,7 +166,7 @@ export const FeedService = (db: DB, env: Env) => new Elysia({aot: false})
                     return 'Not found';
                 }
                 // permission check
-                if (feed.draft && feed.uid !== uid && !admin) {
+                if (feed.draft && feed.uid !== parseInt(uid) && !admin) {
                     set.status = 403;
                     return 'Permission denied';
                 }
@@ -179,12 +179,18 @@ export const FeedService = (db: DB, env: Env) => new Elysia({aot: false})
                 };
             })
             .post('/:id', async ({
-                                     admin,
-                                     set,
-                                     uid,
-                                     params: {id},
-                                     body: {title, listed, content, summary, alias, draft, tags}
-                                 }) => {
+                admin,
+                set,
+                uid,
+                params: {id},
+                body: {title, listed, content, summary, alias, draft, tags}
+            }: {
+                admin: boolean;
+                set: { status: number };
+                uid: string;
+                params: { id: string };
+                body: { title?: string; listed: boolean; content?: string; summary?: string; alias?: string; draft?: boolean; tags?: string[] };
+            }) => {
                 const id_num = parseInt(id);
                 const feed = await db.query.feeds.findFirst({
                     where: eq(feeds.id, id_num)
@@ -193,7 +199,7 @@ export const FeedService = (db: DB, env: Env) => new Elysia({aot: false})
                     set.status = 404;
                     return 'Not found';
                 }
-                if (feed.uid !== uid && !admin) {
+                if (feed.uid !== parseInt(uid) && !admin) {
                     set.status = 403;
                     return 'Permission denied';
                 }
@@ -221,7 +227,12 @@ export const FeedService = (db: DB, env: Env) => new Elysia({aot: false})
                     tags: t.Optional(t.Array(t.String()))
                 })
             })
-            .delete('/:id', async ({admin, set, uid, params: {id}}) => {
+            .delete('/:id', async ({admin, set, uid, params: {id}}: {
+                admin: boolean;
+                set: { status: number };
+                uid: string;
+                params: { id: string };
+            }) => {
                 const id_num = parseInt(id);
                 const feed = await db.query.feeds.findFirst({
                     where: eq(feeds.id, id_num)
@@ -230,7 +241,7 @@ export const FeedService = (db: DB, env: Env) => new Elysia({aot: false})
                     set.status = 404;
                     return 'Not found';
                 }
-                if (feed.uid !== uid && !admin) {
+                if (feed.uid !== parseInt(uid) && !admin) {
                     set.status = 403;
                     return 'Permission denied';
                 }
@@ -238,7 +249,11 @@ export const FeedService = (db: DB, env: Env) => new Elysia({aot: false})
                 return 'Deleted';
             })
     )
-    .post('wp', async ({set, admin, body: {data}}) => {
+    .post('wp', async ({set, admin, body: {data}}: {
+        set: { status: number; headers?: Record<string, string> };
+        admin: boolean;
+        body: { data: File };
+    }) => {
         if (!admin) {
             set.status = 403;
             return 'Permission denied';

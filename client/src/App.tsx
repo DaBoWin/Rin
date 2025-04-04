@@ -24,12 +24,12 @@ function App() {
     if (getCookie('token')?.length ?? 0 > 0) {
       client.user.profile.get({
         headers: headersWithAuth()
-      }).then(({ data }) => {
+      }).then(({ data }: { data?: { id: number, avatar: string, permission: number, username: string } }) => {
         if (data && typeof data != 'string') {
           setProfile({
             id: data.id,
             avatar: data.avatar || '',
-            permission: data.permission,
+            permission: data.permission === 1,
             name: data.username
           })
         }

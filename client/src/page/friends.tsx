@@ -26,13 +26,18 @@ type ApplyItem = {
     name: string;
     id: number;
     uid: number;
-    avatar: string | null;
-    createdAt: Date;
-    updatedAt: Date;
+    avatar: string;
+    createdAt: string;
+    updatedAt: string;
     desc: string | null;
     url: string;
     accepted: number;
     health: string;
+};
+
+type FriendListResponse = {
+    friend_list?: FriendItem[];
+    apply_list?: ApplyItem[];
 };
 
 async function publish({ name, avatar, desc, url }: { name: string, avatar: string, desc: string, url: string }) {
@@ -53,7 +58,7 @@ async function publish({ name, avatar, desc, url }: { name: string, avatar: stri
 }
 
 export function FriendsPage() {
-    let [_, setApply] = useState<ApplyItem>()
+    let [_, setApply] = useState<ApplyItem[]>()
     const [name, setName] = useState("")
     const [desc, setDesc] = useState("")
     const [avatar, setAvatar] = useState("")
@@ -65,15 +70,15 @@ export function FriendsPage() {
     const ref = useRef(false)
     useEffect(() => {
         if (ref.current) return
-        client.friend.index.get().then(({ data }: { data?: { friend_list?: FriendItem[], apply_list?: ApplyItem[] } }) => {
+        client.friend.index.get().then(({ data }: { data?: FriendListResponse | string }) => {
             if (data) {
-                const friends_available = data.friend_list?.filter(({ health }) => health.length === 0) || []
+                const friends_available = data && typeof data !== 'string' ? data.friend_list?.filter(({ health }: { health: string }) => health.length === 0) || [] : []
                 shuffleArray(friends_available)
                 setFriendsAvailable(friends_available)
-                const friends_unavailable = data.friend_list?.filter(({ health }) => health.length > 0) || []
+                const friends_unavailable = data && typeof data !== 'string' ? data.friend_list?.filter(({ health }: { health: string }) => health.length > 0) || [] : []
                 shuffleArray(friends_unavailable)
                 setFriendsUnavailable(friends_unavailable)
-                if (data.apply_list)
+                if (data && typeof data !== 'string' && data.apply_list)
                     setApply(data.apply_list)
             }
             setStatus('idle')
