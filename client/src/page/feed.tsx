@@ -44,7 +44,7 @@ export function FeedPage({ id }: { id: string }) {
         if (!feed) return
         client.feed({ id: feed.id }).delete(null, {
             headers: headersWithAuth()
-        }).then(({ error }) => {
+        }).then(({ error }: { error?: { value: string } }) => {
             if (error) {
                 alert(error.value)
             } else {
@@ -62,6 +62,8 @@ export function FeedPage({ id }: { id: string }) {
             collapseDepth: 2,
             scrollHandlerTimeout: 100,
             tocScrollingWrapper: window,
+            scrollContainer: window,
+            headingsOffset: 0,
             headingLabelCallback(headingLabel: string) {
                 setEmpty(false)
                 return headingLabel
@@ -293,7 +295,7 @@ function CommentInput({ id, onRefresh }: { id: string, onRefresh: () => void }) 
             { content },
             {
                 headers: headersWithAuth()
-            }).then(({ error }) => {
+            }).then(({ error }: { error?: { value: string } }) => {
                 if (error) {
                     setError(errorHumanize(error.value as string))
                 } else {
@@ -390,7 +392,7 @@ function CommentItem({ comment, onRefresh }: { comment: Comment, onRefresh: () =
         if (!confirm("确定要删除这条评论吗？")) return
         client.comment({ id: comment.id }).delete(null, {
             headers: headersWithAuth()
-        }).then(({ error }) => {
+        }).then(({ error }: { error?: { value: string } }) => {
             if (error) {
                 alert(error.value)
             } else {
