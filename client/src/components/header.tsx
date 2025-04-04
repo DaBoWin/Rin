@@ -151,6 +151,7 @@ function Menu() {
 function NavBar({menu, onClick}: { menu: boolean, onClick?: () => void }) {
     const profile = useContext(ProfileContext);
     const [location] = useLocation();
+    console.log('NavBar profile permission:', profile?.permission);
     return (
         <>
             <NavItem menu={menu} onClick={onClick} title="文章"

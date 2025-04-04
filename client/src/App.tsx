@@ -26,6 +26,7 @@ function App() {
         headers: headersWithAuth()
       }).then(({ data }: { data?: { id: number, avatar: string, permission: number, username: string } }) => {
         if (data && typeof data != 'string') {
+          console.log('Profile data loaded:', data)
           setProfile({
             id: data.id,
             avatar: data.avatar || '',
